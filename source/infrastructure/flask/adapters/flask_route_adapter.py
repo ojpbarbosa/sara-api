@@ -2,7 +2,6 @@ from flask import Request, Response
 
 from source.application.ports.presentation.controller import Controller
 
-
 class FlaskRouteAdapter:
     def __init__(self, controller: Controller):
         self.controller = controller
