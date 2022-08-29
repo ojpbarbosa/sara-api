@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from flask_restful import Api # install flask-restful
+from flask_restful import Api
 
 from source.infrastructure.flask.routes.articles_subject import ArticlesSubject
 
