@@ -1,5 +1,5 @@
 from abc import ABC
 
 
-class Category(ABC):
+class Category():
     title: str
