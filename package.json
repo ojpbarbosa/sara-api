@@ -1,0 +1,56 @@
+{
+  "name": "@sara/core",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "prepare": "husky install",
+    "prebuild": "rimraf distribution",
+    "build": "tsc && tsc-alias",
+    "start": "node distribution/main/server.js",
+    "start:dev": "ts-node -r tsconfig-paths/register source/main/server.ts",
+    "dev": "ts-node-dev -r tsconfig-paths/register source/main/server.ts",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.3.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/node": "^17.0.35",
+    "@typescript-eslint/eslint-plugin": "^5.26.0",
+    "@typescript-eslint/parser": "^5.26.0",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^12.4.1",
+    "prettier": "^2.6.2",
+    "prisma": "^4.3.1",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.8.0",
+    "ts-node-dev": "^1.1.8",
+    "tsc-alias": "^1.6.7",
+    "tsconfig-paths": "^4.0.0",
+    "typescript": "^4.6.4"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": false,
+    "trailingComma": "none"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
+}

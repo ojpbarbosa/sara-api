@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "distribution",
+    "module": "commonjs",
+    "target": "es2021",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["source/*"]
+    }
+  },
+  "include": ["source"],
+  "exclude": ["*.spec.ts"]
+}
