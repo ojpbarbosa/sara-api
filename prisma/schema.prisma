@@ -1,11 +1,91 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model Article {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  language    String
+  publishedAt DateTime
+  publisherId String
+
+  authors     ArticleAutor[]
+  descriptors ArticleDescriptor[]
+  graphs      GraphArticle[]
+  publisher   Publisher           @relation(fields: [publisherId], references: [id])
+}
+
+model Author {
+  id        String @id @default(uuid())
+  firstName String
+  lastName  String
+
+  articles ArticleAutor[]
+}
+
+model Descriptor {
+  id   String @id @default(uuid())
+  name String
+
+  articles ArticleDescriptor[]
+}
+
+model Graph {
+  id         String @id @default(uuid())
+  subject    String
+  providerId String
+
+  provider Provider       @relation(fields: [providerId], references: [id])
+  articles GraphArticle[]
+}
+
+model Provider {
+  id   String @id @default(uuid())
+  name String
+  url  String
+  logo String
+
+  graphs Graph[]
+}
+
+model Publisher {
+  id   String @id @default(uuid())
+  name String
+
+  articles Article[]
+}
+
+model ArticleAutor {
+  id        String @id @default(uuid())
+  articleId String
+  authorId  String
+
+  article Article @relation(fields: [articleId], references: [id])
+  author  Author  @relation(fields: [authorId], references: [id])
+}
+
+model ArticleDescriptor {
+  id           String @id @default(uuid())
+  articleId    String
+  descriptorId String
+
+  article    Article    @relation(fields: [articleId], references: [id])
+  descriptor Descriptor @relation(fields: [descriptorId], references: [id])
+}
+
+model GraphArticle {
+  id        String @id @default(uuid())
+  graphId   String
+  articleId String
+  x         Float
+  y         Float
+
+  graph   Graph   @relation(fields: [graphId], references: [id])
+  article Article @relation(fields: [articleId], references: [id])
 }
