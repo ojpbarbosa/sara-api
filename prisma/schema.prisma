@@ -12,13 +12,15 @@ model Article {
   title       String
   description String
   language    String
-  publishedAt DateTime
+  publishedOn DateTime
   publisherId String
 
-  authors     ArticleAutor[]
+  authors     ArticleAuthor[]
   descriptors ArticleDescriptor[]
   graphs      GraphArticle[]
   publisher   Publisher           @relation(fields: [publisherId], references: [id])
+
+  @@map("articles")
 }
 
 model Author {
@@ -26,7 +28,9 @@ model Author {
   firstName String
   lastName  String
 
-  articles ArticleAutor[]
+  articles ArticleAuthor[]
+
+  @@map("authors")
 }
 
 model Descriptor {
@@ -34,6 +38,8 @@ model Descriptor {
   name String
 
   articles ArticleDescriptor[]
+
+  @@map("descriptors")
 }
 
 model Graph {
@@ -43,6 +49,8 @@ model Graph {
 
   provider Provider       @relation(fields: [providerId], references: [id])
   articles GraphArticle[]
+
+  @@map("graphs")
 }
 
 model Provider {
@@ -52,6 +60,8 @@ model Provider {
   logo String
 
   graphs Graph[]
+
+  @@map("providers")
 }
 
 model Publisher {
@@ -59,15 +69,19 @@ model Publisher {
   name String
 
   articles Article[]
+
+  @@map("publishers")
 }
 
-model ArticleAutor {
+model ArticleAuthor {
   id        String @id @default(uuid())
   articleId String
   authorId  String
 
   article Article @relation(fields: [articleId], references: [id])
   author  Author  @relation(fields: [authorId], references: [id])
+
+  @@map("article_authors")
 }
 
 model ArticleDescriptor {

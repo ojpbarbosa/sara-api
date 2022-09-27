@@ -12,37 +12,20 @@ export class GetArticlesBySubject implements GetArticlesBySubjectUseCase {
 
   async getArticlesBySubject({
     subject,
-    depth
+    depth,
+    range
   }: GetArticlesBySubjectData): Promise<Article[]> {
+    depth = depth || 2
+    range = range || 5
+
     const articles: Article[] = []
-
-    async function getArticlesBySubjectRecursively(
-      subject: string,
-      depth: number,
-      getArticlesBySubjectRepository: GetArticlesBySubjectRepository
-    ) {
-      if (depth === 0) return
-
-      const articlesBySubject =
-        await getArticlesBySubjectRepository.getArticlesBySubject(subject)
-
-      articles.push(...articlesBySubject)
-
-      articlesBySubject.forEach((article) => {
-        getArticlesBySubjectRecursively(
-          getRecurrentDescriptors(articles)[0],
-          depth - 1,
-          getArticlesBySubjectRepository
-        )
-      })
-    }
 
     function getRecurrentDescriptors(articles: Article[]): string[] {
       const descriptors: string[] = []
 
       articles.forEach((article) => {
         article.descriptors.forEach((descriptor) => {
-          descriptors.push(descriptor.descriptor.name)
+          descriptors.push(descriptor.name)
         })
       })
 
@@ -55,14 +38,51 @@ export class GetArticlesBySubject implements GetArticlesBySubjectUseCase {
           recurrentDescriptors.push(descriptor)
       })
 
-      return recurrentDescriptors
+      const descriptorsFrequency: { [key: string]: number } = {}
+
+      recurrentDescriptors.forEach((descriptor) => {
+        if (descriptorsFrequency[descriptor]) descriptorsFrequency[descriptor]++
+        else descriptorsFrequency[descriptor] = 1
+      })
+
+      return Object.keys(descriptorsFrequency).sort(
+        (a, b) => descriptorsFrequency[b] - descriptorsFrequency[a]
+      )
     }
 
-    await getArticlesBySubjectRecursively(
-      subject,
-      depth,
-      this.getArticlesBySubjectRepository
-    )
+    async function getArticles(
+      subject: string,
+      depth: number,
+      getArticlesBySubjectRepository: GetArticlesBySubjectRepository
+    ): Promise<Article[]> {
+      if (depth === 0) return articles
+
+      const rawArticles =
+        await getArticlesBySubjectRepository.getArticlesBySubject(subject)
+
+      if (
+        !articles.find((article) => article.id === rawArticles[0].id) &&
+        rawArticles[0].id
+      )
+        articles.push(rawArticles[0])
+
+      const descriptors = getRecurrentDescriptors(rawArticles)
+
+      while (range > descriptors.length) range--
+
+      for (let i = 0; i < range; i++) {
+        await getArticles(
+          descriptors[
+            (descriptors.length / range) * i +
+              Math.round((Math.random() * descriptors.length) / range)
+          ],
+          depth - 1,
+          getArticlesBySubjectRepository
+        )
+      }
+    }
+
+    await getArticles(subject, depth, this.getArticlesBySubjectRepository)
 
     return articles
   }
