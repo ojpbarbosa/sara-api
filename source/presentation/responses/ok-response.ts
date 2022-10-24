@@ -1,6 +1,6 @@
 import { Response } from '@/application/ports/presentation'
 
-export default (body: object): Response => {
+export const OkResponse = (body: object): Response => {
   return {
     statusCode: 200,
     body

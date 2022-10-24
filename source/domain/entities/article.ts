@@ -15,10 +15,10 @@ export interface Article {
   subject: string
   publishedOn: Date
   // publisherId: string
-
   // authors?: ArticleAuthor[]
   authors?: Author[]
   // descriptors?: ArticleDescriptor[]
   descriptors?: Descriptor[]
   publisher?: Publisher
+  related: Article[]
 }

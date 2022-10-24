@@ -7,17 +7,11 @@ export const adaptController = (controller: Controller) => {
       headers: httpRequest.headers,
       body: httpRequest.body,
       parameters: httpRequest.params,
-      collaboratorId: httpRequest.headers.collaboratorId as string
+      query: httpRequest.query
     })
 
     const { statusCode, body } = response
 
-    if (statusCode >= 200 && statusCode < 300) {
-      httpResponse.status(statusCode).json(body)
-    } else {
-      httpResponse.status(statusCode).json({
-        ...body
-      })
-    }
+    httpResponse.status(statusCode).json(body)
   }
 }

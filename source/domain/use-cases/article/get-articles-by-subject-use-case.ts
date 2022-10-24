@@ -7,5 +7,5 @@ export interface GetArticlesBySubjectData {
 }
 
 export interface GetArticlesBySubjectUseCase {
-  getArticlesBySubject(data: GetArticlesBySubjectData): Promise<Article[]>
+  getArticlesBySubject(data: GetArticlesBySubjectData): Promise<Article>
 }

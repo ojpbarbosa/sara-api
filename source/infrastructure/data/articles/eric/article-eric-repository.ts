@@ -2,7 +2,7 @@ import { GetArticlesBySubjectRepository } from '@/application/ports/repositories
 import { Article } from '@/domain/entities'
 import axios from 'axios'
 
-export class ArticleEricRepository implements GetArticlesBySubjectRepository {
+export class ArticlesEricRepository implements GetArticlesBySubjectRepository {
   async getArticlesBySubject(subject: string): Promise<Article[]> {
     const { data } = await axios.get(
       'https://api.ies.ed.gov/eric/?search=' + subject
@@ -42,7 +42,8 @@ export class ArticleEricRepository implements GetArticlesBySubjectRepository {
           publisher: article.publisher && {
             name: article.publisher.split('.')[0],
             website: article.publisher.split('Web site: ')[1]
-          }
+          },
+          related: []
         }
       }
     )

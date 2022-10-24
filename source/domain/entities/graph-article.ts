@@ -6,7 +6,6 @@ export interface GraphArticle {
   articleId: string
   x: number
   y: number
-
   article?: Article
   graph?: Graph
 }

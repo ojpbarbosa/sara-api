@@ -1,12 +1,12 @@
 import express from 'express'
-import setupRoutes from './routes'
-import setupMiddlewares from './middlewares'
+import routes from './routes'
+import middlewares from './middlewares'
 
-export const setupApp = () => {
+export default () => {
   const app = express()
 
-  setupMiddlewares(app)
-  setupRoutes(app)
+  middlewares(app)
+  routes(app)
 
   return app
 }

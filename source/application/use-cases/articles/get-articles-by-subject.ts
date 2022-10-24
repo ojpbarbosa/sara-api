@@ -14,11 +14,9 @@ export class GetArticlesBySubject implements GetArticlesBySubjectUseCase {
     subject,
     depth,
     range
-  }: GetArticlesBySubjectData): Promise<Article[]> {
+  }: GetArticlesBySubjectData): Promise<Article> {
     depth = depth || 2
     range = range || 5
-
-    const articles: Article[] = []
 
     function getRecurrentDescriptors(articles: Article[]): string[] {
       const descriptors: string[] = []
@@ -51,39 +49,53 @@ export class GetArticlesBySubject implements GetArticlesBySubjectUseCase {
     }
 
     async function getArticles(
+      parent: Article,
       subject: string,
       depth: number,
       getArticlesBySubjectRepository: GetArticlesBySubjectRepository
-    ): Promise<Article[]> {
-      if (depth === 0) return articles
+    ): Promise<void> {
+      if (depth === 0 || !subject) return
 
-      const rawArticles =
+      console.log(subject, depth)
+
+      const articles =
         await getArticlesBySubjectRepository.getArticlesBySubject(subject)
 
-      if (
-        !articles.find((article) => article.id === rawArticles[0].id) &&
-        rawArticles[0].id
-      )
-        articles.push(rawArticles[0])
+      articles.forEach((article) => {
+        if (!parent.related.find((related) => related.id === article.id))
+          parent.related.push(article)
+      })
 
-      const descriptors = getRecurrentDescriptors(rawArticles)
+      const descriptors = getRecurrentDescriptors(articles)
 
-      while (range > descriptors.length) range--
+      range = range > descriptors.length ? descriptors.length : range
 
       for (let i = 0; i < range; i++) {
-        await getArticles(
-          descriptors[
-            (descriptors.length / range) * i +
-              Math.round((Math.random() * descriptors.length) / range)
-          ],
-          depth - 1,
-          getArticlesBySubjectRepository
-        )
+        for (let j = 0; j < articles.length; j++) {
+          await getArticles(
+            articles[j],
+            descriptors[
+              (descriptors.length / range) * i +
+                Math.round((Math.random() * descriptors.length) / range)
+            ],
+            depth - 1,
+            getArticlesBySubjectRepository
+          )
+        }
       }
     }
 
-    await getArticles(subject, depth, this.getArticlesBySubjectRepository)
+    const article = (
+      await this.getArticlesBySubjectRepository.getArticlesBySubject(subject)
+    )[0]
 
-    return articles
+    await getArticles(
+      article,
+      subject,
+      depth,
+      this.getArticlesBySubjectRepository
+    )
+
+    return article
   }
 }

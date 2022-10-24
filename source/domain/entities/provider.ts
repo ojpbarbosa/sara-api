@@ -5,6 +5,5 @@ export interface Provider {
   name: string
   url: string
   logo: string
-
   graphs?: Graph[]
 }
