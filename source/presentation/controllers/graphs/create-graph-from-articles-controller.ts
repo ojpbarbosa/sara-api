@@ -40,6 +40,7 @@ export class CreateGraphFromArticlesController implements Controller {
 
       const graph =
         await this.createGraphFromArticlesUseCase.createGraphFromArticles(
+          subject,
           articles
         )
 
